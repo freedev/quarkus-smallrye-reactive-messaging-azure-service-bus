@@ -1,6 +1,8 @@
 # quarkus-smallrye-reactive-messaging-azure-service-bus Project
 
-This project uses [Quarkus](https://quarkus.io/), [Smallrye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging/) and [Azure SDK for Java (for Azure Service Bus)](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-java-how-to-use-topics-subscriptions) .
+This project uses [Quarkus](https://quarkus.io/), [Smallrye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging/) and [Azure SDK for Java (for Azure Service Bus)](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-java-how-to-use-topics-subscriptions).
+
+![Sequence Diagram](Sequence_Diagram.png)
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
