@@ -11,13 +11,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class ClassAConsumer extends AbstractAzureConsumer<ClassA> {
+public class ClassAServiceBusConsumer extends AbstractAzureConsumer<ClassA> {
 
     @Inject
     protected ObjectMapper objectMapper;
     @Inject
-    public ClassAConsumer(@ConfigProperty(name = "application.service-bus.class-a.topic") String inTopic,
-                          @ConfigProperty(name = "application.service-bus.class-a.subscription") String sub) {
+    public ClassAServiceBusConsumer(@ConfigProperty(name = "application.service-bus.class-a.topic") String inTopic,
+                                    @ConfigProperty(name = "application.service-bus.class-a.subscription") String sub) {
         super(inTopic, sub, BroadcastProcessor.create());
         prefetchCount = 10;
     }

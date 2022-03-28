@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
-public class ClassBProducer extends AbstractAzureProducer<ClassB> {
+public class ClassBServiceBusProducer extends AbstractAzureProducer<ClassB> {
 
-    public ClassBProducer(@ConfigProperty(name = "application.service-bus.class-b.topic") String outTopic) {
+    public ClassBServiceBusProducer(@ConfigProperty(name = "application.service-bus.class-b.topic") String outTopic) {
         super(outTopic);
     }
     
