@@ -24,6 +24,7 @@ public class ClassAServiceBusConsumer extends AbstractAzureConsumer<ClassA> {
 
     @Override
     protected ClassA parseReceivedMessage(String msg) throws Exception {
+        log.infof("received message {}", msg);
         return objectMapper.readValue(msg, ClassA.class);
     }
 

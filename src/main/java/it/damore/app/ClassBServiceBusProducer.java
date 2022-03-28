@@ -18,19 +18,9 @@ public class ClassBServiceBusProducer extends AbstractAzureProducer<ClassB> {
     }
     
     @Incoming("from-processor-to-sb-producer")
-    public CompletionStage<Void> producer(List<ClassB> msg) {
-        log.info("sending " + msg.size());
-        return Uni.createFrom()
-                .item(msg)
-                .emitOn(Infrastructure.getDefaultWorkerPool())
-                .onItem()
-                .invoke(list -> {
-                    sendJsonMessages(list);
-                })
-                .onItem()
-                .ignore()
-                .andContinueWithNull()
-                .subscribeAsCompletionStage();
+    public void producer(ClassB msg) {
+        log.info("sending " + msg);
+            sendJsonMessages(List.of(msg));
     }
 
 }
