@@ -67,12 +67,12 @@ public abstract class AbstractAzureConsumer<T> extends BaseClass {
     public T consumeMessage(ServiceBusReceivedMessage message) {
         try {
             T azureMessage = parseReceivedMessage(message.getBody().toString());
-            serviceBusReceiverAsyncClient.complete(message);
+            serviceBusReceiverAsyncClient.complete(message).subscribe();
             return azureMessage;
         } catch (Exception e) {
             log.errorf("Error while processing message from Azure ServiceBus: %s", e.getMessage());
             log.errorf("Error while processing message from Azure ServiceBus: %s", message.getBody().toString());
-            serviceBusReceiverAsyncClient.abandon(message);
+            serviceBusReceiverAsyncClient.abandon(message).subscribe();
         }
         return null;
     }
