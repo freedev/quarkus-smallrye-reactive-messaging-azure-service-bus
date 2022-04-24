@@ -1,5 +1,6 @@
 package it.damore.app;
 
+import com.azure.core.amqp.AmqpTransportType;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessage;
 import com.azure.messaging.servicebus.ServiceBusReceiverAsyncClient;
@@ -18,10 +19,13 @@ public abstract class AbstractAzureConsumer<T> extends BaseClass {
     protected String inTopicName;
     protected String subscriptionName;
     protected Integer prefetchCount = 0;
-    private boolean disableAutocomplete = true;
+
+    Duration maxAutoLockRenewDuration;
 
     @Inject
     protected ServiceBusClientBuilder serviceBusClientBuilder;
+
+//    ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     protected AbstractAzureConsumer() {
         super();
@@ -38,23 +42,18 @@ public abstract class AbstractAzureConsumer<T> extends BaseClass {
     protected void onStart(@Observes StartupEvent ev) {
 
         serviceBusReceiverAsyncClient = serviceBusClientBuilder
-//                    .transportType(AmqpTransportType.AMQP.AMQP_WEB_SOCKETS)
+                .transportType(AmqpTransportType.AMQP_WEB_SOCKETS)
                 .receiver()
                 .topicName(inTopicName)
                 .subscriptionName(subscriptionName)
                 .prefetchCount(prefetchCount)
-                .maxAutoLockRenewDuration(Duration.ofMinutes(1))
+                .maxAutoLockRenewDuration(this.maxAutoLockRenewDuration)
                 .disableAutoComplete()
                 .buildAsyncClient();
 
-//            if (disableAutocomplete) {
-//                this.consumer = serviceBusProcessorClientBuilder.disableAutoComplete();
-//            } else {
-//                this.consumer = serviceBusProcessorClientBuilder.buildProcessorClient();
-//            }
-
         Multi.createFrom()
                 .publisher(serviceBusReceiverAsyncClient.receiveMessages())
+//                .emitOn(executorService)
                 .onItem()
                 .transform(m -> this.consumeMessage(m))
                 .subscribe()
@@ -65,10 +64,12 @@ public abstract class AbstractAzureConsumer<T> extends BaseClass {
     }
 
     public T consumeMessage(ServiceBusReceivedMessage message) {
+//        log.infof("Received message from Azure ServiceBus: %s", message.getBody().toString());
         try {
             T azureMessage = parseReceivedMessage(message.getBody().toString());
             serviceBusReceiverAsyncClient.complete(message).subscribe();
             return azureMessage;
+//            log.infof("Ack message sent on Azure Service Bus: %s", azureMessage);
         } catch (Exception e) {
             log.errorf("Error while processing message from Azure ServiceBus: %s", e.getMessage());
             log.errorf("Error while processing message from Azure ServiceBus: %s", message.getBody().toString());

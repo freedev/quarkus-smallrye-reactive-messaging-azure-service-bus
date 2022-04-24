@@ -9,6 +9,7 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.time.Duration;
 
 @Singleton
 public class ClassAServiceBusConsumer extends AbstractAzureConsumer<ClassA> {
@@ -19,7 +20,8 @@ public class ClassAServiceBusConsumer extends AbstractAzureConsumer<ClassA> {
     public ClassAServiceBusConsumer(@ConfigProperty(name = "application.service-bus.class-a.topic") String inTopic,
                                     @ConfigProperty(name = "application.service-bus.class-a.subscription") String sub) {
         super(inTopic, sub, BroadcastProcessor.create());
-        prefetchCount = 10;
+        prefetchCount = 0; // raise this value to optimize the performance...
+        maxAutoLockRenewDuration = Duration.ofMinutes(2); // Max duration
     }
 
     @Override
